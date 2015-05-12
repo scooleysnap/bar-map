@@ -5,98 +5,228 @@
 	<title>Beirgarten Map</title>
 	<style>
 		body, html {
-			margin: 0;
 			height: 100%;
+			position: relative;
+
+		}
+		div {box-sizing: border-box;}
+		body{
+			margin: 0;
+			font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+			font-size: 16px;
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+		}
+		.map-container{
+			position: fixed;
+			top: 0;
+			left: 400px;
+			right: 0;
+			height: 100%;
+			overflow: hidden;
 		}
 		#map-canvas {
-			width: 100%;
 			height: 100%;
+			width: 100%;
+			overflow: hidden;
+		}
+		.content{
+			position: relative;
+			z-index: 2;
+			width: 400px;
+			background-color: #323536;
+			padding: 40px;
+			min-height: 100%;
+		}
+		.bar-name {
+			margin-bottom: 4px;
+			font-size: 28px;
+
+		}
+		.grade {
+			text-align: center;
+			background-color: #96ca29;
+			width: 60px;
+			height: 60px;
+			font-size: 36px;
+			color: #FFF;
+			font-weight: 500;
+			-webkit-border-radius: 50%;
+			-moz-border-radius: 50%;
+			-ms-border-radius: 50%;
+			-o-border-radius: 50%;
+			border-radius: 50%;
+			padding-top: 10px;
+			box-sizing: border-box;
+			margin: 12px auto;
+		}
+		.label{
+			background-color: #929292;
+			text-align: center;
+			width: 76px;
+			padding: 6px;
+
+		}
+		.place-photo {
+			float: right;
+			clear: none;
+		}
+		.phone{
+			padding-top: 4px;
+		}
+		.like-rate {
+			text-align: center;
+			font-size: 18px;
+		}
+		.bold{
+			font-weight: 500;
+		}
+		h1 {
+			font-size: 36px;
+			color: #96ca29;
+			font-weight: 500;
+			line-height: 1em;
+			margin-top: 12px;
+			clear: both;
+		}
+		p{
+			color: #fff;
+			font-size: 18px;
+			line-height: 1.23em;
+			font-weight: 200;
+		}
+		.logo{
+			width: 175px;
+			height: 229px;
+			background-image: url(logo.png);
+			background-size: 100% auto;
+			background-repeat: no-repeat;
+			margin: auto;
 		}
 	</style>
 	<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+	<script type="text/javascript" src="markerwithlabel_packed.js"></script>
+
 	
 	<script>
+	var map;
+
 	function init() {
 	        var mapCanvas = $('#map-canvas')[0];
 	        var mapOptions = {
-	          center: new google.maps.LatLng(40.7625123,-73.9737996),
+	          center: new google.maps.LatLng(40.7590017,-73.9672764),
 	          zoom: 13,
 	          mapTypeId: google.maps.MapTypeId.ROADMAP,
-	          disableDefaultUI: true
-	        }
-	        var map = new google.maps.Map(mapCanvas, mapOptions)
+	          disableDefaultUI: true,
+	          scrollwheel: false,
+	          navigationControl: false,
+	          mapTypeControl: false,
+	          scaleControl: false,
+	          draggable: false,
+	        };
+	        
+	        map = new google.maps.Map(mapCanvas, mapOptions);
 
 	        map.set('styles',
 	        	[{"featureType":"all","elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]},{"featureType":"administrative","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"administrative.country","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"administrative.country","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"administrative.country","elementType":"labels.text","stylers":[{"visibility":"simplified"}]},{"featureType":"administrative.province","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"administrative.locality","elementType":"all","stylers":[{"visibility":"simplified"},{"saturation":"-100"},{"lightness":"30"}]},{"featureType":"administrative.neighborhood","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"administrative.land_parcel","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"visibility":"simplified"},{"gamma":"0.00"},{"lightness":"74"}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"landscape.man_made","elementType":"all","stylers":[{"lightness":"3"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"featureType":"road","elementType":"geometry","stylers":[{"visibility":"simplified"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]}]
 	        );
+
 			
 			var locations = [
 				{
 					loc: {placeId: 'ChIJN-93ZsBZwokRMe_yr5I34Ik'}, 
-					icon: 'icon-marker-a.png'
+					icon: 'icon-marker-a.png',
+					grade: 'A',
+					likeRate: '62%'
 				},
 				{
 					loc: {placeId: 'ChIJI-OMB0NfwokR6CIi6iO1znM'},
-					icon: 'icon-marker-b-.png'
+					icon: 'icon-marker-b-.png',
+					grade: 'B-',
+					likeRate: '53%'
 				},
 				{
 					loc: {placeId: 'ChIJk5ltki9fwokRMLbolornnHQ'},
-					icon: 'icon-marker-b+.png'
+					icon: 'icon-marker-b+.png',
+					grade: 'B+',
+					likeRate: '58%'
 				},
 				{
 					loc: {placeId: 'ChIJ1_tkw2BZwokRCU4l1ZUB_ew'},
-					icon: 'icon-marker-c.png'
+					icon: 'icon-marker-c.png',
+					grade: 'C',
+					likeRate: '51%'
 				},
 				{
 					loc: {placeId: 'ChIJh_o5GqpZwokRYNjQn-NMZBc'},
-					icon: 'icon-marker-d+.png'
+					icon: 'icon-marker-d+.png',
+					grade: 'D+',
+					likeRate: '48%'
 				},
 				{
 					loc: {placeId: 'ChIJR1at3HlZwokRBk8FzXS8d-s'},
-					icon: 'icon-marker-c.png'
+					icon: 'icon-marker-c.png',
+					grade: 'C',
+					likeRate: '51%'
 				},
 				{
 					loc: {placeId: 'ChIJ_eGfj0RZwokRykOPrmLmjds'},
-					icon: 'icon-marker-a-.png'
+					icon: 'icon-marker-a-.png',
+					grade: 'A-',
+					likeRate: '60%'
 				},
 				{
 					loc: {placeId: 'ChIJhV1tboZZwokRCNghkde1e2w'},
-					icon: 'icon-marker-a.png'
+					icon: 'icon-marker-a.png',
+					grade: 'A',
+					likeRate: '64%'
 				},
 				{
 					loc: {placeId: 'ChIJKeZ6jQJZwokRZit5kTgxqgc'},
-					icon: 'icon-marker-f.png'
+					icon: 'icon-marker-f.png',
+					grade: 'F',
+					likeRate: '41%'
 				},
 			]
 
 			
 
-			var infoWindow = new google.maps.InfoWindow();
+			var infoWindow = new google.maps.InfoWindow({maxWidth: 260});
 			var service = new google.maps.places.PlacesService(map);
+			var photoBuffer = new Image();
 
 			console.log(locations);
 			console.log(locations.length);
 
-			var i;
-			var icon;
-
- 			for (i = 0; i < locations.length; i++){
-				console.log('in loop', i);
-
-				service.getDetails(locations[i].loc, function(place, status){
+			function makeMarkers (location, i) {
+				service.getDetails(location.loc, function(place, status){
 					
 					if(status == google.maps.places.PlacesServiceStatus.OK){
 
-						var marker = new google.maps.Marker({
+						var marker = new MarkerWithLabel({
 							map: map,
 							position: place.geometry.location,
-							//icon: icon
+							icon: locations[i].icon,
+							labelClass: 'label',
+							labelContent: place.name,
+							labelAnchor: new google.maps.Point(38, 0)
+
 
 						});
+						var placePhoto = (place.photos) ? '<img class="place-photo" src="' + place.photos[0].getUrl({'maxWidth': 200, 'maxHeight': 200}) + '">' : '';
+						
+
 						console.log('added map marker for ' + place.name);
 						google.maps.event.addListener(marker, 'click', function(){
-							infoWindow.setContent(place.name);
+
+							var infoContent = '<h2 class="bar-name">' + place.name + '</h1>' +
+								'<div class="address">' + place.formatted_address + '</div>' +
+								'<div class="phone">' + place.formatted_phone_number + '</div>' +
+								'<div class="grade">' + locations[i].grade + '</div>' +
+								'<div class="like-rate">Like Rate: <span class="bold">'+ locations[i].likeRate + '</span></div>';
+
+							infoWindow.setContent(infoContent);
 							infoWindow.open(map, this);
 						});
 						console.log('added event listener for ' + place.name)
@@ -107,8 +237,20 @@
 				});
 			}
 
+			var i;
+			var icon;
+
+ 			for (i = 0; i < locations.length; i++){
+ 				makeMarkers(locations[i], i);
+			}
+
 	      }
 	      google.maps.event.addDomListener(window, 'load', init);
+	      google.maps.event.addDomListener(window, "resize", function() {
+	       var center = map.getCenter();
+	       google.maps.event.trigger(map, "resize");
+	       map.setCenter(center); 
+	      });
 
 
 
@@ -116,6 +258,17 @@
 
 </head>
 <body>
-	<div id="map-canvas"></div>
+	<div class="map-container">
+		<div id="map-canvas"></div>
+	</div>
+	<div class="content">
+		<div class="logo"></div>
+		<h1>Which Biergartens Attract the Hottest Singles?</h1>
+		<p>The Grade is a New-York based, female-friendly dating application that holds users accountable for their behavior. We analyzed the swiping behavior of users who went to New York area Biergartens in order to determine which one has the most desirable, single patrons. Each team's like-rate is based on 400,000 swipe interactions from 6,000 users who opened The Grade at one of the biergartens</p>
+		<p>The map below shows the rate at which users get liked on The Grade, broken out by which Biergartens they've opened the grade at. For example, users on The Grade who opened the app at Lorely are the most desirable compared to other Biergartens, as they get liked 64% of the time. Click on the markers below to learn more about each Biergarten</p>
+
+	</div>
+
+	
 </body>
 </html>
